@@ -32,7 +32,7 @@ module.exports = {
   },
   module: {
     rules: [
-      {
+      /*{
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: 'pre',
@@ -40,7 +40,7 @@ module.exports = {
         options: {
           formatter: require('eslint-friendly-formatter')
         }
-      },
+      },*/
       {
         test: /\.vue$/,
         loader: 'vue-loader',
@@ -52,7 +52,8 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test')]
+        include: [resolve('src'), resolve('test')],
+        exclude:'/node_modules/'
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

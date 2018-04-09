@@ -3,12 +3,12 @@
     <div class="wrapper">
       <div class="dialog dialog-shadow" style="display: block; margin-top: -362px;">
         <div class="title" v-if="loginPage">
-          <h4>使用 Smartisan ID 登录官网</h4></div>
+          </div>
         <div v-if="loginPage" class="content">
           <ul class="common-form">
             <li class="username border-1p">
               <div class="input">
-                <input type="text" v-model="ruleForm.userName" placeholder="账号">
+                <input type="text" v-model="ruleForm.userName" placeholder="用户名">
               </div>
             </li>
             <li>
@@ -18,7 +18,7 @@
             </li>
             <li style="text-align: right" class="pr">
               <span class="pa" style="top: 0;left: 0;color: #d44d44">{{ruleForm.errMsg}}</span>
-              <a href="javascript:;" style="padding: 0 5px" @click="loginPage = false">注册 Smartisan ID</a>
+              <a href="javascript:;" style="padding: 0 5px" @click="loginPage = false">注册</a>
             </li>
           </ul>
           <!--登陆-->
@@ -27,13 +27,13 @@
           </div>
         </div>
         <div class="registered" v-else>
-          <h4>注册 Smartisan ID</h4>
+          <h4>注册</h4>
           <div class="content" style="margin-top: 20px;">
             <ul class="common-form">
               <li class="username border-1p">
                 <div class="input">
                   <input type="text"
-                         v-model="registered.userName" placeholder="账号"
+                         v-model="registered.userName" placeholder="用户名"
                          @keyup="registered.userName = registered.userName.replace(/[^\w\.\/]/ig,'')">
                 </div>
               </li>
@@ -56,7 +56,7 @@
             <ul class="common-form pr">
               <li class="pa" style="left: 0;top: 0;margin: 0;color: #d44d44">{{registered.errMsg}}</li>
               <li style="text-align: center;line-height: 48px;margin-bottom: 0;">
-                <span>如果您已拥有 Smartisan ID，则可在此</span>
+                <span>如果您已注册，则可在此</span>
                 <a href="javascript:;"
                    style="margin: 0 5px"
                    @click="loginPage = true">登陆</a>
@@ -122,7 +122,7 @@
       login () {
         const {userName, userPwd} = this.ruleForm
         if (!userName || !userPwd) {
-          this.ruleForm.errMsg = '账号或者密码不能为空!'
+          this.ruleForm.errMsg = '用户名或者密码不能为空!'
         } else {
           let params = {userName, userPwd}
           userLogin(params).then(res => {
@@ -145,7 +145,7 @@
       regist () {
         const {userName, userPwd, userPwd2} = this.registered
         if (!userName || !userPwd || !userPwd2) {
-          this.registered.errMsg = '账号密码不能为空'
+          this.registered.errMsg = '用户名或密码不能为空'
           return false
         }
         if (userPwd2 !== userPwd) {
@@ -224,7 +224,7 @@
       background: linear-gradient(#fff, #f5f5f5);
       overflow: visible;
       position: relative;
-      background-image: url(/static/images/smartisan_4ada7fecea.png);
+      background-image: url(/static/images/login-icon.jpg);
       background-size: 160px;
       background-position: top center;
       background-repeat: no-repeat;

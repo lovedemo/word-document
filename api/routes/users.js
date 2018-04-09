@@ -40,7 +40,7 @@ router.post('/login', async (req, res) => {
         } else {
             res.json({
                 status: '1',
-                msg: '账号或者密码错误',
+                msg: '用户名或者密码错误',
                 result: ''
             })
         }
@@ -69,13 +69,14 @@ router.post('/loginOut', (req, res) => {
 
 // 注册账号
 router.post('/register', async (req, res) => {
+    console.log(req.body);
     const {userName, userPwd} = req.body;
     try {
         const doc = await User.findOne({userName})
         if (doc) {
             res.json({
                 status: '1',
-                msg: '账号已存在!',
+                msg: '用户名已存在!',
                 result: ''
             })
         } else {
@@ -84,8 +85,7 @@ router.post('/register', async (req, res) => {
             let userId = `${r1}${(Date.parse(new Date())) / 1000}${r2}`
             // 可以注册
             User.insertMany({
-                avatar: 'http://osc9sqdxe.bkt.clouddn.com/default-user-avatar.png',
-                name: '皮皮虾',
+                avatar: '',//http://osc9sqdxe.bkt.clouddn.com/default-user-avatar.png
                 cartList: [],
                 orderList: [],
                 addressList: [],

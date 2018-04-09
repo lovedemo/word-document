@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose')
 mongoose.Promise = require('bluebird');
 
-mongoose.connect('mongodb://127.0.0.1:27017/mymall', {useMongoClient: true})
+mongoose.connect('mongodb://127.0.0.1:12345/mymall', {useMongoClient: true})
 const db = mongoose.connection
 db.once("open", function () {
     console.log("数据库连接成功");
