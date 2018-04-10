@@ -6,15 +6,19 @@ const qn = require('qn');
 const User = require('../models/user');
 const Good = require('../models/goods');
 require('./../util/dateFormat')
+
+
+var multer  = require('multer')
+var upload = multer({ dest: 'public/uploads/bookImg' })
 // 空间名
 const bucket = 'avatar-img-d';
-// 七牛云
+/*// 七牛云
 const client = qn.create({
     accessKey: 'n83SaVzVtzNbZvGCz0gWsWPgpERKp0oK4BtvXS-Y',
     secretKey: '1Uve9T2_gQX9pDY0BFJCa1RM_isy9rNjfC4XVliW',
     bucket: bucket,
     origin: 'http://ouibvkb9c.bkt.clouddn.com'
-})
+})*/
 
 // 登陆接口
 router.post('/login', async (req, res) => {
@@ -108,40 +112,49 @@ router.post('/register', async (req, res) => {
         })
     }
 })
+//上传书的图片
+router.post('/bookImg',  upload.single('file'), function (req, res, next) {
+    //console.log(req.file);
+    res.json({url:'http://localhost:3333/uploads/bookImg/'+req.file.filename});
+});
 
-// 上传图片
+// 上传图片(头像)
 router.post('/upload', function (req, res, next) {
     // 图片数据流
+    console.log(req.body)
     var imgData = req.body.imgData;
     // 构建图片名
     var fileName = Date.now() + '.png';
     // 构建图片路径
-    var filePath = './image/' + fileName;
+    var filePath = 'public/uploads/images/' + fileName;
     // 过滤data:URL
     var base64Data = imgData.replace(/^data:image\/\w+;base64,/, "");
     var dataBuffer = new Buffer(base64Data, 'base64');
+    console.log(filePath);
     fs.writeFile(filePath, dataBuffer, function (err) {
         if (err) {
+            console.log(err)
             res.end(JSON.stringify({status: '102', msg: '文件写入失败'}));
         } else {
-            client.uploadFile(filePath, {key: `/avatar/${fileName}`}, function (err1, result) {
+            res.json({
+                status: '0',
+                result: {
+                    path: 'http://localhost:3333/uploads/images/'+fileName
+                },
+                msg: 'suc'
+            })
+           /* client.uploadFile(filePath, {key: `/avatar/${fileName}`}, function (err1, result) {
                 if (err1) {
                     res.json({
                         status: '1',
                         msg: '上传失败'
                     });
                 } else {
-                    res.json({
-                        status: '0',
-                        result: {
-                            path: result.url
-                        },
-                        msg: 'suc'
-                    })
+
                 }
                 // 上传之后删除本地文件
                 fs.unlinkSync(filePath);
-            });
+            });*/
         }
     })
 })

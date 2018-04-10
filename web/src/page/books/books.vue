@@ -90,12 +90,12 @@
       },
       // 加载更多
       loadMore () {
-        this.busy = true
+       /* this.busy = true
         this.timer = setTimeout(() => {
           this.params.page++
           this._getComputer(true)
           this.busy = false
-        }, 500)
+        }, 500)*/
       }
     },
     created () {

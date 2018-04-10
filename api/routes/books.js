@@ -1,8 +1,41 @@
 const express     = require('express');
 const router      = express.Router()
 const Good        = require('../models/goods')
+const Book        = require('../models/books')
 const User        = require('../models/user')
 const superagent  = require('superagent')
+
+//添加书籍
+router.post('/addBook',(req,res,next)=>{
+    const {userId} = req.cookies;
+    let bookData={...req.body,userId:userId};
+    console.log(userId,req.body);
+    let r1 = Math.floor(Math.random() * 10);
+    let r2 = Math.floor(Math.random() * 10);
+    bookData.bookId = `${r1}${(Date.parse(new Date())) / 1000}${r2}`
+    Book.insertMany(bookData,(err)=>{
+        if(!err){
+            res.json({
+                status: '0',
+                msg: 'successful',
+                result: {}
+            })
+        }
+    })
+
+});
+//获取自己的书籍
+
+router.get('/getMybook',  (req, res, next) => {
+    const {userId} = req.cookies;
+    let myBooks=[];
+    Book.find({userId:userId},(err,doc)=>{
+        myBooks=doc;
+        res.json(myBooks);
+    });
+    //
+   // console.log(mybooks)
+});
 
 // 商品列表
 router.get('/computer',  (req, res, next) => {
@@ -38,7 +71,7 @@ router.get('/computer',  (req, res, next) => {
 
     let productModel = Good.find(params).skip(skip).limit(pageSize);
     // 1 升序 -1 降序
-    sort && productModel.sort({'salePrice': sort})
+    sort && productModel.sort({'salePrice': sort});
     productModel.exec(function (err, doc) {
         if (err) {
             res.json({

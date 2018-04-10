@@ -20,7 +20,7 @@ Vue.use(VueLazyload, {
 Vue.config.productionTip = false;
 
 // 不需要登陆的页面 => 白名单
-const whiteList = ['/home', '/goods', '/login', '/goodsDetails'];
+const whiteList = ['/home', '/books', '/login', '/booksDetails'];
 router.beforeEach(function (to, from, next) {
   userInfo().then(res => {
     // 没登录

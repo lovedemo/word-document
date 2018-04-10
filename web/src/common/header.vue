@@ -4,13 +4,11 @@
       <header class="w">
         <div class="w-box">
           <div class="nav-logo">
-            <h1>
-              <router-link to="/" title="锤子科技官网">Smartisan</router-link>
-            </h1>
+            <img  style="width: 50px;height: 50px;border-radius: 50px" src="../../static/images/login-icon.jpg"/>
           </div>
           <div class="right-box">
             <div class="nav-list">
-              <router-link to="/goods">全部商品</router-link>
+              <router-link to="/books">全部书籍</router-link>
             </div>
             <div class="nav-aside" ref="aside" :class="{fixed: (st && showNav)}">
               <div class="user pr">
@@ -54,7 +52,7 @@
                           <li class="clearfix" v-for="(item,i) in cartList" :key="i">
                             <div class="cart-item">
                               <div class="cart-item-inner">
-                                <router-link :to="'goodsDetails?productId='+item.productId">
+                                <router-link :to="'booksDetails?productId='+item.productId">
                                   <div class="item-thumb">
                                     <img :src="item.productImg">
                                   </div>
@@ -62,7 +60,7 @@
                                 <div class="item-desc">
                                   <div class="cart-cell">
                                     <h4>
-                                      <router-link :to="'goodsDetails?productId='+item.productId"
+                                      <router-link :to="'booksDetails?productId='+item.productId"
                                                    v-text="item.productName"></router-link>
                                     </h4>
                                     <p class="attrs"><span>白色</span>
@@ -79,7 +77,7 @@
                         </ul>
                       </div>
                       <!--总件数-->
-                      <div class="nav-cart-total"><p>共 <strong>{{totalNum}}</strong> 件商品</p> <h5>合计：<span
+                      <div class="nav-cart-total"><p>共 <strong>{{totalNum}}</strong> 本</p> <h5>合计：<span
                         class="price-icon">¥</span><span
                         class="price-num">{{totalPrice}}</span></h5>
                         <h6>
@@ -112,7 +110,7 @@
                   <router-link to="/">首页</router-link>
                 </li>
                 <li>
-                  <router-link to="/goods">全部商品</router-link>
+                  <router-link to="/books">全部书籍</router-link>
                 </li>
               </ul>
             </div>
@@ -153,8 +151,8 @@
           text: '售后服务',
           link: '/user/support'
         }, {
-          text: '我的优惠',
-          link: '/user/coupon'
+          text: '我的书籍',
+          link: '/user/myBooks'
         }],
         st: false,
         // 头部购物车显示
@@ -215,7 +213,7 @@
       navFixed () {
         if (this.$route.path === '/goods' ||
           this.$route.path === '/home' ||
-          this.$route.path === '/goodsDetails') {
+          this.$route.path === '/booksDetails') {
           // 计算是否吸顶
           if (this.showNav) {
             let st = document.documentElement.scrollTop || document.body.scrollTop
@@ -306,7 +304,9 @@
       display: flex;
       align-items: center;
       > a {
-        background: url(/static/images/global-logo-red@2x.png) no-repeat 50%;
+        height: 50px;
+        width: 50px;
+        background: url(/static/images/login-icon.jpg) no-repeat 50%;
         background-size: cover;
         display: block;
         @include wh(50px, 40px);
@@ -788,7 +788,7 @@
         left: 50%;
         margin-left: -610px;
         width: 1220px;
-        background: #000;
+        background: #3f3f3f;
         height: 1px;
         display: none;
         opacity: 0;

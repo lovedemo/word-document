@@ -102,7 +102,7 @@
           </div>
           <p style="text-align: center;padding: 20px;color: #8d8d8d">你的购物车空空如也</p>
           <div style="text-align: center">
-            <router-link to="/goods">
+            <router-link to="/books">
               <y-button text="现在选购" style="width: 150px;height: 40px;line-height: 38px;color: #8d8d8d"></y-button>
             </router-link>
           </div>

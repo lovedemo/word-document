@@ -3,15 +3,15 @@ import Router from 'vue-router'
 const Index = resolve => require(['/page/index'], resolve)
 const Login = resolve => require(['/page/Login/login'], resolve)
 const Home = resolve => require(['/page/Home/home'], resolve)
-const GoodS = resolve => require(['/page/Goods/goods'], resolve)
-const goodsDetails = resolve => require(['/page/Goods/goodsDetails'], resolve)
+const books = resolve => require(['/page/Books/books'], resolve)
+const booksDetails = resolve => require(['/page/books/booksDetails'], resolve)
 const Cart = resolve => require(['/page/Cart/cart'], resolve)
 const order = resolve => require(['/page/Order/order'], resolve)
 const user = resolve => require(['/page/User/user'], resolve)
 const orderList = resolve => require(['/page/User/children/order'], resolve)
 const information = resolve => require(['/page/User/children/information'], resolve)
 const addressList = resolve => require(['/page/User/children/addressList'], resolve)
-const coupon = resolve => require(['/page/User/children/coupon'], resolve)
+const myBooks = resolve => require(['/page/User/children/myBooks'], resolve)
 const aihuishou = resolve => require(['/page/User/children/aihuishou'], resolve)
 const support = resolve => require(['/page/User/children/support'], resolve)
 const checkout = resolve => require(['/page/Checkout/checkout'], resolve)
@@ -27,8 +27,8 @@ export default new Router({
       redirect: '/home',
       children: [
         {path: 'home', component: Home},
-        {path: 'goods', component: GoodS},
-        {path: 'goodsDetails', name: 'goodsDetails', component: goodsDetails}
+        {path: 'books', component: books},
+        {path: 'booksDetails', name: 'booksDetails', component: booksDetails}
       ]
     },
     {path: '/login', name: 'login', component: Login},
@@ -51,7 +51,7 @@ export default new Router({
         {path: 'orderList', name: '订单列表', component: orderList},
         {path: 'information', name: '账户资料', component: information},
         {path: 'addressList', name: '收货地址', component: addressList},
-        {path: 'coupon', name: '我的优惠', component: coupon},
+        {path: 'myBooks', name: '我的书籍', component: myBooks},
         {path: 'support', name: '售后服务', component: support},
         {path: 'aihuishou', name: '以旧换新', component: aihuishou}
       ]
