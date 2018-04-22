@@ -132,7 +132,8 @@
   </div>
 </template>
 <script>
-  import { getCartList, addressList, addressUpdate, addressAdd, addressDel, bookDet } from '/api/books'
+  import { getCartList, addressList, addressUpdate, addressAdd, addressDel, bookDet, payMent } from '/api/books'
+  import { addOrder } from '/api/orders'
   import YShelf from '/components/shelf'
   import YButton from '/components/YButton'
   import YPopup from '/components/popup'
@@ -208,14 +209,31 @@
       // 付款
       payment () {
         // 需要拿到地址id
-        this.$router.push({
+       /* this.$router.push({
           path: '/order/payment',
           query: {
             'addressId': this.addressId,
             'bookId': this.bookId,
             'num': this.num
           }
+        })*/
+
+       let books = this.cartList.filter(x=>{
+         return x.checked == 1;
+       });
+       console.log(this.cartList,'books',books);
+        addOrder({
+          addressId: this.addressId,
+          orderPrice: this.checkPrice,
+          books: books,
+        }).then(res => {
+          if (!res.status) {
+            this.$router.push({path: '/order/paysuccess', query: {price: this.checkPrice}})
+          } else {
+            console.log("res",res.message);
+          }
         })
+
       },
       // 选择地址
       defaultAddress (id) {

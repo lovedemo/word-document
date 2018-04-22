@@ -75,7 +75,7 @@
 <script>
   import YShelf from '/components/shelf'
   import YButton from '/components/YButton'
-  import { addressList, getCartList, payMent, productDet } from '/api/books'
+  import { addressList, getCartList, payMent } from '/api/books'
   export default {
     data () {
       return {
