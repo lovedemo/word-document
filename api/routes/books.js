@@ -1,9 +1,9 @@
 const express     = require('express');
-const router      = express.Router()
-const Good        = require('../models/goods')
-const Book        = require('../models/books')
-const User        = require('../models/user')
-const superagent  = require('superagent')
+const router      = express.Router();
+const Good        = require('../models/goods');
+const Book        = require('../models/books');
+const User        = require('../models/user');
+const superagent  = require('superagent');
 
 //添加书籍
 router.post('/addBook',(req,res,next)=>{
@@ -12,7 +12,7 @@ router.post('/addBook',(req,res,next)=>{
     console.log(userId,req.body);
     let r1 = Math.floor(Math.random() * 10);
     let r2 = Math.floor(Math.random() * 10);
-    bookData.bookId = `${r1}${(Date.parse(new Date())) / 1000}${r2}`
+    bookData.bookId = `${r1}${(Date.parse(new Date())) / 1000}${r2}`;
     Book.insertMany(bookData,(err)=>{
         if(!err){
             res.json({
@@ -37,7 +37,63 @@ router.get('/getMybook',  (req, res, next) => {
    // console.log(mybooks)
 });
 
+// 书籍列表
+router.get('/getAllBooks',  (req, res, next) => {
+    let sort = req.query.sort || '';
+    let page = +req.query.page || 1;
+    let pageSize = +req.query.pageSize || 20;
+    let priceGt = +req.query.priceGt || ''; // 大于
+    let priceLte = +req.query.priceLte || ''; // 小于
+    let skip = (page - 1) * pageSize;//跳过多少条
+    let params = {};
+    if (priceGt || priceLte) {
+        if (priceGt && priceLte) {
+            if (priceGt > priceLte) {
+                let l = priceLte, g = priceGt;
+                priceGt = l;
+                priceLte = g
+            }
+            params = {
+                'price': {
+                    $gt: priceGt,
+                    $lte: priceLte
+                }
+            }
+        } else {
+            params = {
+                'price': {
+                    $gt: priceGt || 0,
+                    $lte: priceLte || 99999
+                }
+            }
+        }
+    }
+
+    let bookModel = Book.find(params).skip(skip).limit(pageSize);
+    // 1 升序 -1 降序
+    sort && bookModel.sort({'price': sort});
+    bookModel.exec(function (err, doc) {
+        if (err) {
+            res.json({
+                status: '1',
+                msg: err.message,
+                result: ''
+            })
+        } else {
+            res.json({
+                status: '0',
+                msg: 'successful',
+                result: {
+                    count: doc.length,
+                    data: doc
+                }
+            })
+        }
+    })
+});
+
 // 商品列表
+/*
 router.get('/computer',  (req, res, next) => {
     let sort = req.query.sort || '';
     let page = +req.query.page || 1;
@@ -91,15 +147,16 @@ router.get('/computer',  (req, res, next) => {
         }
     })
 })
+*/
 
 // 加入购物车
 router.post('/addCart',  async (req, res) => {
 
     let userId = req.cookies.userId;
-    let {productId, productNum = 1 } = req.body
+    let {bookId, bookNum = 1 } = req.body;
     if (userId) {
         try {
-            const userDoc = await User.findOne({userId})
+            const userDoc = await User.findOne({userId});
             if (userDoc) {
                 // 商品是否存在
                 let have = false;
@@ -109,9 +166,9 @@ router.post('/addCart',  async (req, res) => {
                     // 遍历用户名下的购物车列表
                     for (let value of userDoc.cartList) {
                         // 找到该商品
-                        if (value.productId === productId) {
+                        if (value.bookId === bookId) {
                             have = true;
-                            value.productNum += productNum;
+                            value.bookNum += bookNum;
                             break;
                         }
                     }
@@ -120,14 +177,14 @@ router.post('/addCart',  async (req, res) => {
 
                 // 购物车无内容 或者 未找到商品 则直接添加
                 if (!userDoc.cartList.length || !have) {
-                    const goodsDoc = await Good.findOne({productId})
+                    const bookDoc = await Book.findOne({bookId});
                     let doc = {
-                        "productId": goodsDoc.productId,
-                        "productImg": goodsDoc.productImageBig,
-                        "productName": goodsDoc.productName,
+                        "bookId": bookDoc.bookId,
+                        "imgList": bookDoc.imgList,
+                        "bookName": bookDoc.bookName,
                         "checked": "1",
-                        "productNum": productNum,
-                        "productPrice": goodsDoc.salePrice
+                        "bookNum": bookNum,
+                        "price": bookDoc.price
                     };
                     userDoc.cartList.push(doc)
                 }
@@ -166,7 +223,7 @@ router.post('/addCart',  async (req, res) => {
     }
 })
 
-// 批量加入购物车
+// 批量加入购物车 todo
 router.post('/addCartBatch',  async (req, res) => {
     let userId = req.cookies.userId,
         productMsg = req.body.productMsg;
@@ -183,9 +240,9 @@ router.post('/addCartBatch',  async (req, res) => {
                         userDoc.cartList.forEach((item, i) => {
                             // 找到该商品
                             productMsg.forEach((pro, j) => {
-                                if (item.productId === pro.productId) {
+                                if (item.bookId === pro.bookId) {
                                     sx.push(j)
-                                    item.productNum += pro.productNum
+                                    item.bookNum += pro.bookNum
                                 }
                             })
                         })
@@ -198,22 +255,22 @@ router.post('/addCartBatch',  async (req, res) => {
                             })
                             let goodList1 = [], goodNum1 = []
                             newSx.forEach(item => {
-                                goodList1.push(item.productId)
-                                goodNum1.push(item.productNum)
+                                goodList1.push(item.bookId)
+                                goodNum1.push(item.bookNum)
                             })
-                            Good.find({productId: {$in: goodList1}}, function (err3, goodDoc) {
+                            Book.find({bookId: {$in: goodList1}}, function (err3, goodDoc) {
 
                                 var userCart = []
                                 // 返回一个数组
                                 goodDoc.forEach((item, i) => {
                                     // userCart.push()
                                     userDoc.cartList.push({
-                                        "productId": item.productId,
-                                        "productImg": item.productImageBig,
-                                        "productName": item.productName,
+                                        "bookId": item.bookId,
+                                        "imgList": item.imgList,
+                                        "bookName": item.bookName,
                                         "checked": "1",
-                                        "productNum": goodNum1[i],
-                                        "productPrice": item.salePrice
+                                        "bookNum": goodNum1[i],
+                                        "price": item.price
                                     })
                                 })
                                 // if (userCart.length) {
@@ -247,20 +304,20 @@ router.post('/addCartBatch',  async (req, res) => {
                     } else {
                         var goodList = [], goodNum = []
                         productMsg.forEach(item => {
-                            goodList.push(item.productId)
-                            goodNum.push(item.productNum)
+                            goodList.push(item.bookId)
+                            goodNum.push(item.bookNum)
                         })
-                        Good.find({productId: {$in: goodList}}, function (err3, doc) {
+                        Book.find({bookId: {$in: goodList}}, function (err3, doc) {
 
                             // 返回一个数组
                             doc.forEach((item, i) => {
                                 userDoc.cartList.push({
-                                    "productId": item.productId,
-                                    "productImg": item.productImageBig,
-                                    "productName": item.productName,
+                                    "bookId": item.bookId,
+                                    "imgList": item.imgList,
+                                    "bookName": item.bookName,
                                     "checked": "1",
-                                    "productNum": goodNum[i],
-                                    "productPrice": item.salePrice
+                                    "bookNum": goodNum[i],
+                                    "price": item.price
                                 })
                             })
 
@@ -296,9 +353,11 @@ router.post('/addCartBatch',  async (req, res) => {
 
 })
 
-let czUrl = 'http://www.smartisan.com/product/home'
 
-// 转发锤子接口
+
+// 转发锤子接口 todo
+/*
+let czUrl = 'http://www.smartisan.com/product/home'
 router.get('/productHome', function (req, res) {
     superagent.get(czUrl).end(function (err, res1) {
         if (err) {
@@ -374,12 +433,12 @@ router.get('/productHome', function (req, res) {
 
         }
     })
-})
+})*/
 
 // 商品信息
-router.get('/productDet', function (req, res) {
-    let productId = req.query.productId
-    Good.findOne({productId}, (err, doc) => {
+router.get('/bookDet', function (req, res) {
+    let bookId = req.query.bookId
+    Book.findOne({bookId}, (err, doc) => {
         if (err) {
             res.json({
                 status: '1',

@@ -72,7 +72,7 @@
   import YFooter from '/common/footer'
   import YButton from '/components/YButton'
   import { userLogin, register } from '/api/index'
-  import { addCartBatch } from '/api/goods'
+  import { addCartBatch } from '/api/books'
   import { getStore, removeStore } from '/utils/storage'
 
   export default {
@@ -112,8 +112,8 @@
         if (locaCart && locaCart.length) {
           cartArr = locaCart.map(item => {
             return {
-              'productId': item.productId,
-              'productNum': item.productNum
+              'bookId': item.bookId,
+              'bookNum': item.bookNum
             }
           })
         }

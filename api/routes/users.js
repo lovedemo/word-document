@@ -4,6 +4,7 @@ const fs = require('fs');
 const qn = require('qn');
 
 const User = require('../models/user');
+const Book = require('../models/books');
 const Good = require('../models/goods');
 require('./../util/dateFormat')
 
@@ -246,34 +247,48 @@ router.post('/cartList', async (req, res) => {
 // 修改数量
 router.post('/cartEdit', function (req, res) {
     let userId = req.cookies.userId,
-        productId = req.body.productId,
-        productNum = req.body.productNum > 10 ? 10 : req.body.productNum,
+        bookId = req.body.bookId,
+        bookNum = req.body.bookNum ,
         checked = req.body.checked;
-    if (userId) {
-        User.update({
-            "userId": userId,
-            "cartList.productId": productId
-        }, {
-            "cartList.$.productNum": productNum,
-            "cartList.$.checked": checked,
-        }, (err, doc) => {
-            if (err) {
-                res.json({
-                    status: '1',
-                    msg: err.message,
-                    result: ''
-                });
-            } else {
-                res.json({
-                    status: '0',
-                    msg: '',
-                    result: 'suc'
-                });
-            }
-        })
-    }
+    Book.findOne({bookId:bookId},(err,doc)=>{
+        if(!err){
+            if (userId) {
+                if(doc.num >= bookNum){
+                    User.update({
+                        "userId": userId,
+                        "cartList.bookId": bookId
+                    }, {
+                        "cartList.$.bookNum": bookNum,
+                        "cartList.$.checked": checked,
+                    }, (err, doc) => {
+                        if (err) {
+                            res.json({
+                                status: '1',
+                                msg: err.message,
+                                result: ''
+                            });
+                        } else {
+                            res.json({
+                                status: '0',
+                                msg: '',
+                                result: 'suc'
+                            });
+                        }
+                    })
+                }else {
+                    res.json({
+                        status: '1',
+                        msg: '库存不足',
+                        result: 'suc'
+                    });
+                }
 
-})
+            }
+        }
+    });
+
+
+});
 // 全选
 router.post('/editCheckAll', function (req, res) {
     let userId = req.cookies.userId,
@@ -315,13 +330,13 @@ router.post('/editCheckAll', function (req, res) {
 // 删除购物车
 router.post('/cartDel', function (req, res) {
     let userId = req.cookies.userId,
-        productId = req.body.productId;
+        bookId = req.body.bookId;
     User.update({
         userId
     }, {
         $pull: {
             'cartList': {
-                'productId': productId
+                'bookId': bookId
             }
         }
     }, function (err, doc) {

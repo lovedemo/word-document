@@ -7,13 +7,13 @@
           <div class="thumbnail">
             <ul>
               <li v-for="(item, i) in small" :key="i" :class="{on:big===item}" @click="big=item">
-                <img v-lazy="item" :alt="product.productName">
+                <img v-lazy="item" :alt="product.bookName">
               </li>
             </ul>
           </div>
           <div class="thumb">
             <div class="big">
-              <img :src="big" :alt="product.productName">
+              <img :src="big" :alt="product.bookName">
             </div>
           </div>
         </div>
@@ -21,11 +21,11 @@
       <!--右边-->
       <div class="banner">
         <div class="sku-custom-title">
-          <h4>{{product.productName}}</h4>
+          <h4>{{product.bookName}}</h4>
           <h6>
-            <span>{{product.sub_title}}</span>
+            <span>{{product.info}}</span>
             <span class="price">
-              <em>¥</em><i>{{product.salePrice}}</i></span>
+              <em>¥</em><i>{{product.price}}</i></span>
           </h6>
         </div>
         <div class="num">
@@ -34,11 +34,11 @@
         </div>
         <div class="buy">
           <y-button text="加入购物车"
-                    @btnClick="addCart(product.productId,product.salePrice,product.productName,product.productImageBig)"
+                    @btnClick="addCart(product.bookId,product.price,product.bookName,product.imgList)"
                     classStyle="main-btn"
                     style="width: 145px;height: 50px;line-height: 48px"></y-button>
           <y-button text="现在购买"
-                    @btnClick="checkout(product.productId)"
+                    @btnClick="checkout(product.bookId)"
                     style="width: 145px;height: 50px;line-height: 48px"></y-button>
         </div>
       </div>
@@ -63,7 +63,7 @@
   </div>
 </template>
 <script>
-  import { productDet, addCart } from '/api/goods'
+  import { bookDet, addCart } from '/api/books'
   import { mapMutations, mapState } from 'vuex'
   import YShelf from '/components/shelf'
   import BuyNum from '/components/buynum'
@@ -83,8 +83,8 @@
     },
     methods: {
       ...mapMutations(['ADD_CART', 'ADD_ANIMATION', 'SHOW_CART']),
-      _productDet (productId) {
-        productDet({productId}).then(res => {
+      _bookDet (bookId) {
+        bookDet({bookId}).then(res => {
           let result = res.result
           this.product = result
           this.productMsg = result.productMsg || ''
@@ -95,23 +95,23 @@
       addCart (id, price, name, img) {
         if (!this.showMoveImg) {     // 动画是否在运动
           if (this.login) { // 登录了 直接存在用户名下
-            addCart({productId: id, productNum: this.productNum}).then(res => {
+            addCart({bookId: id, bookNum: this.bookNum}).then(res => {
               // 并不重新请求数据
               this.ADD_CART({
-                productId: id,
-                productPrice: price,
-                productName: name,
-                productImg: img,
-                productNum: this.productNum
+                bookId: id,
+                price: price,
+                bookName: name,
+                imgList: img,
+                bookNum: this.bookNum
               })
             })
           } else { // 未登录 vuex
             this.ADD_CART({
-              productId: id,
-              productPrice: price,
-              productName: name,
-              productImg: img,
-              productNum: this.productNum
+              bookId: id,
+              price: price,
+              bookName: name,
+              imgList: img,
+              bookNum: this.bookNum
             })
           }
           // 加入购物车动画
@@ -126,19 +126,19 @@
           }
         }
       },
-      checkout (productId) {
-        this.$router.push({path: '/checkout', query: {productId, num: this.productNum}})
+      checkout (bookId) {
+        this.$router.push({path: '/checkout', query: {bookId, num: this.bookNum}})
       },
       editNum (num) {
-        this.productNum = num
+        this.bookNum = num
       }
     },
     components: {
       YShelf, BuyNum, YButton
     },
     created () {
-      let id = this.$route.query.productId
-      this._productDet(id)
+      let id = this.$route.query.bookId;
+      this._bookDet(id)
     }
   }
 </script>

@@ -4,17 +4,17 @@
       <div slot="content">
         <div class="box-inner order-info">
           <h3>提交订单成功</h3>
-          <p class="payment-detail">请在 <span>24 小时内</span>完成支付，超时订单将自动取消。</p>
-          <p class="payment-detail">我们将在您完成支付后的 72 小时内发货</p></div>
+          <!--<p class="payment-detail">请在 <span>24 小时内</span>完成支付，超时订单将自动取消。</p>
+          <p class="payment-detail">我们将在您完成支付后的 72 小时内发货</p></div>-->
         <!--支付方式-->
-        <div class="pay-type">
+        <!--<div class="pay-type">
           <div class="p-title">支付方式</div>
           <div class="pay-item">
             <div :class="{active:payType==1}" @click="payType=1"><img src="/static/images/alipay@2x.png" alt=""></div>
             <div :class="{active:payType==2}" @click="payType=2"><img src="/static/images/weixinpay@2x.png" alt="">
             </div>
           </div>
-        </div>
+        </div>-->
 
         <div>
           <div class="box-inner">
@@ -23,7 +23,7 @@
                 应付金额:
               </span>
               <em><span>¥</span>{{checkPrice}}</em>
-              <y-button text="立刻支付"
+              <y-button text="已完成支付"
                         classStyle="main-btn"
                         style="width: 120px;height: 40px;font-size: 16px;line-height: 38px"
                         @btnClick="paySuc()"
@@ -32,7 +32,7 @@
           </div>
         </div>
 
-      </div>
+        </div></div>
     </y-shelf>
     <!--地址信息-->
     <div class="p-msg w">
@@ -56,26 +56,26 @@
         <div class="name">
           <div class="name-cell ellipsis">
             <a href="javascript:;" title=""
-               target="_blank">{{item.productName}}</a></div>
+               target="_blank">{{item.bookName}}</a></div>
         </div>
         <div class="n-b">
           <div class="subtotal ">
-            <div class="subtotal-cell"> ¥ {{item.productPrice * item.productNum}}<br></div>
+            <div class="subtotal-cell"> ¥ {{item.price * item.bookNum}}<br></div>
           </div>
-          <div class="goods-num ">{{item.productNum}}</div>
-          <div class="price ">¥ {{item.productPrice}}</div>
+          <div class="goods-num ">{{item.bookNum}}</div>
+          <div class="price ">¥ {{item.price}}</div>
         </div>
       </div>
     </div>
     <!--合计-->
     <div class="order-discount-line"><p> 商品总计： <span>¥ {{checkPrice}}</span></p>
-      <p> 运费： <span>+ ¥ 0.00</span></p></div>
+    </div>
   </div>
 </template>
 <script>
   import YShelf from '/components/shelf'
   import YButton from '/components/YButton'
-  import { addressList, getCartList, payMent, productDet } from '/api/goods'
+  import { addressList, getCartList, payMent, productDet } from '/api/books'
   export default {
     data () {
       return {
@@ -83,7 +83,7 @@
         addList: {},
         cartList: [],
         addressId: 0,
-        productId: '',
+        bookId: '',
         num: ''
       }
     },
@@ -93,7 +93,7 @@
         let totalPrice = 0
         this.cartList && this.cartList.forEach(item => {
           if (item.checked === '1') {
-            totalPrice += (item.productNum * item.productPrice)
+            totalPrice += (item.bookNum * item.price)
           }
         })
         return totalPrice
@@ -114,8 +114,8 @@
         payMent({
           addressId: this.addressId,
           orderTotal: this.checkPrice,
-          productId: this.productId,
-          productNum: this.num
+          bookId: this.bookId,
+          bookNum: this.num
         }).then(res => {
           if (!res.status) {
             this.$router.push({path: '/order/paysuccess', query: {price: this.checkPrice}})

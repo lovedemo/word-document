@@ -29,7 +29,7 @@
   </div>
 </template>
 <script>
-  import {getComputer} from '/api/goods'
+  import {getAllBooks} from '/api/books'
   import mallGoods from '/components/mallGoods'
   import YButton from '/components/YButton'
   export default {
@@ -58,7 +58,7 @@
           priceGt: min,
           priceLte: max
         }
-        getComputer(params).then(res => {
+        getAllBooks(params).then(res => {
           if (res.result.count) {
             let data = res.result.data
             if (flag) {

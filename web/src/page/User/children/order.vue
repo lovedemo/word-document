@@ -61,7 +61,7 @@
   </div>
 </template>
 <script>
-  import { orderList, delOrder } from '/api/goods'
+  import { orderList, delOrder } from '/api/books'
   import YShelf from '/components/shelf'
   export default {
     data () {

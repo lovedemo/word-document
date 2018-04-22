@@ -7,12 +7,12 @@ const userSchema = new mongoose.Schema({
     "orderList": Array,
     "cartList": [
         {
-            "productId": String,
-            "productImg": String,
-            "productName": String,
+            "bookId": String,
+            "imgList": String,
+            "bookName": String,
             "checked": String,
-            "productNum": Number,
-            "productPrice": Number
+            "bookNum": Number,
+            "price": Number
         }
     ],
     'addressList': [

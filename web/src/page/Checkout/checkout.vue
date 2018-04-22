@@ -49,37 +49,34 @@
               </div>
               <!--列表-->
               <div class="cart-table" v-for="(item,i) in cartList" :key="i" v-if="item.checked === '1'">
-                <div class="cart-group divide pr" :data-productid="item.productId">
+                <div class="cart-group divide pr" :data-bookId="item.bookId">
                   <div class="cart-top-items">
                     <div class="cart-items clearfix">
                       <!--图片-->
                       <div class="items-thumb fl">
-                        <img :alt="item.productName"
-                             :src="item.productImg">
-                        <a href="javascript:;" :title="item.productName" target="_blank"></a>
+                        <img :alt="item.bookName"
+                             :src="item.imgList">
+                        <a href="javascript:;" :title="item.bookName" target="_blank"></a>
                       </div>
                       <!--信息-->
                       <div class="name hide-row fl">
                         <div class="name-table">
-                          <a href="javascript:;" :title="item.productName" target="_blank"
-                             v-text="item.productName"></a>
-                          <ul class="attribute">
-                            <li>白色</li>
-                          </ul>
+                          <a href="javascript:;" :title="item.bookName" target="_blank"
+                             v-text="item.bookName"></a>
                         </div>
                       </div>
                       <!--商品数量-->
                       <div>
                         <!--总价格-->
-                        <div class="subtotal" style="font-size: 14px">¥ {{item.productPrice * item.productNum}}</div>
+                        <div class="subtotal" style="font-size: 14px">¥ {{item.price * item.bookNum}}</div>
                         <!--数量-->
                         <div class="item-cols-num">
                           <div class="select">
-                            <span v-text="item.productNum"></span>
+                            <span v-text="item.bookNum"></span>
                           </div>
                         </div>
                         <!--价格-->
-                        <div class="price">¥ {{item.productPrice}}</div>
+                        <div class="price">¥ {{item.price}}</div>
                       </div>
                     </div>
                   </div>
@@ -135,7 +132,7 @@
   </div>
 </template>
 <script>
-  import { getCartList, addressList, addressUpdate, addressAdd, addressDel, productDet } from '/api/goods'
+  import { getCartList, addressList, addressUpdate, addressAdd, addressDel, bookDet } from '/api/books'
   import YShelf from '/components/shelf'
   import YButton from '/components/YButton'
   import YPopup from '/components/popup'
@@ -150,7 +147,7 @@
         popupOpen: false,
         popupTitle: '管理收货地址',
         num: '', // 立刻购买
-        productId: '',
+        bookId: '',
         msg: {
           addressId: '',
           userName: '',
@@ -170,7 +167,7 @@
         let totalPrice = 0
         this.cartList && this.cartList.forEach(item => {
           if (item.checked === '1') {
-            totalPrice += (item.productNum * item.productPrice)
+            totalPrice += (item.bookNum * item.price)
           }
         })
         return totalPrice
@@ -215,7 +212,7 @@
           path: '/order/payment',
           query: {
             'addressId': this.addressId,
-            'productId': this.productId,
+            'bookId': this.bookId,
             'num': this.num
           }
         })
@@ -257,23 +254,23 @@
       del (addressId) {
         this._addressDel({addressId})
       },
-      _productDet (productId) {
-        productDet({productId}).then(res => {
+      _bookDet (bookId) {
+        bookDet({bookId}).then(res => {
           let item = res.result
           item.checked = '1'
-          item.productImg = item.productImageBig
-          item.productNum = this.num
-          item.productPrice = item.salePrice
+          // item.im;gList = item.imgList
+          item.bookNum = this.num
+          // item.price = item.price
           this.cartList.push(item)
         })
       }
     },
     created () {
       let query = this.$route.query
-      if (query.productId && query.num) {
-        this.productId = query.productId
+      if (query.bookId && query.num) {
+        this.bookId = query.bookId
         this.num = query.num
-        this._productDet(this.productId)
+        this._bookDet(this.bookId)
       } else {
         this._getCartList()
       }

@@ -18,29 +18,29 @@ export default {
     }
   },
   // 加入购物车
-  [ADD_CART] (state, {productId, productPrice, productName, productImg, productNum = 1}) {
+  [ADD_CART] (state, {bookId, price, bookName, imgList, bookNum = 1}) {
     let cart = state.cartList // 购物车
     let falg = true
-    let goods = {
-      productId,
-      productPrice,
-      productName,
-      productImg
+    let book = {
+      bookId,
+      price,
+      bookName,
+      imgList
     }
     if (cart.length) {        // 有内容
       cart.forEach(item => {
-        if (item.productId === productId) {
-          if (item.productNum >= 0) {
+        if (item.bookId === bookId) {
+          if (item.bookNum >= 0) {
             falg = false
-            item.productNum += productNum
+            item.bookNum += bookNum
           }
         }
       })
     }
     if (!cart.length || falg) {
-      goods.productNum = productNum
-      goods.checked = '1'
-      cart.push(goods)
+      book.bookNum = bookNum
+      book.checked = '1'
+      cart.push(book)
     }
     state.cartList = cart
     // 存入localStorage
@@ -72,12 +72,12 @@ export default {
     // }
   },
   // 移除商品
-  [REDUCE_CART] (state, {productId}) {
+  [REDUCE_CART] (state, {bookId}) {
     let cart = state.cartList
     cart.forEach((item, i) => {
-      if (item.productId === productId) {
-        if (item.productNum > 1) {
-          item.productNum--
+      if (item.bookId === bookId) {
+        if (item.bookNum > 1) {
+          item.bookNum--
         } else {
           cart.splice(i, 1)
         }
@@ -88,18 +88,18 @@ export default {
     setStore('buyCart', state.cartList)
   },
   // 修改购物车
-  [EDIT_CART] (state, {productId, productNum, checked}) {
-    let cart = state.cartList
-    if (productNum) {
+  [EDIT_CART] (state, {bookId, bookNum, checked}) {
+    let cart = state.cartList;
+    if (bookNum) {
       cart.forEach((item, i) => {
-        if (item.productId === productId) {
-          item.productNum = productNum
+        if (item.bookId === bookId) {
+          item.bookNum = bookNum;
           item.checked = checked
         }
       })
-    } else if (productId) {
+    } else if (bookId) {
       cart.forEach((item, i) => {
-        if (item.productId === productId) {
+        if (item.bookId === bookId) {
           cart.splice(i, 1)
         }
       })

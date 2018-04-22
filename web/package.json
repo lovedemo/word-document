@@ -1,8 +1,8 @@
 {
-  "name": "vue-node-mall",
+  "name": "vue-node-book",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "yucccc <13450003105@163.com>",
+  "author": "yanzheng",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",

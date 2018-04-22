@@ -14,7 +14,7 @@
                 class="subtotal">小计</span> <span class="num">数量</span> <span class="price1">单价</span></div>
               <!--列表-->
               <div class="cart-table" v-for="(item,i) in cartList" :key="i">
-                <div class="cart-group divide pr" :data-productid="item.productId">
+                <div class="cart-group divide pr" :data-bookId="item.bookId">
                   <div class="cart-top-items">
                     <div class="cart-items clearfix">
                       <!--勾选-->
@@ -24,42 +24,39 @@
                       </div>
                       <!--图片-->
                       <div class="items-thumb fl">
-                        <img :alt="item.productName"
-                             :src="item.productImg">
-                        <a href="javascript:;" :title="item.productName" target="_blank"></a>
+                        <img :alt="item.bookName"
+                             :src="item.imgList">
+                        <a href="javascript:;" :title="item.bookName" target="_blank"></a>
                       </div>
                       <!--信息-->
                       <div class="name hide-row fl">
                         <div class="name-table">
-                          <a href="javascript:;" :title="item.productName" target="_blank"
-                             v-text="item.productName"></a>
-                          <ul class="attribute">
-                            <li>白色</li>
-                          </ul>
+                          <a href="javascript:;" :title="item.bookName" target="_blank"
+                             v-text="item.bookName"></a>
                         </div>
                       </div>
                       <!--删除按钮-->
                       <div class="operation">
-                        <a class="items-delete-btn" @click="cartdel(item.productId)"></a>
+                        <a class="items-delete-btn" @click="cartdel(item.bookId)"></a>
                       </div>
                       <!--商品数量-->
                       <div>
                         <!--总价格-->
-                        <div class="subtotal" style="font-size: 14px">¥ {{item.productPrice * item.productNum}}</div>
+                        <div class="subtotal" style="font-size: 14px">¥ {{item.price * item.bookNum}}</div>
                         <!--数量-->
-                        <buy-num :num="item.productNum"
-                                 :id="item.productId"
+                        <buy-num :num="item.bookNum"
+                                 :id="item.bookId"
                                  :checked="item.checked"
                                  style="height: 140px;
                                    display: flex;
                                    align-items: center;
                                    justify-content: center;"
-                                 :limit="5"
+                                 :limit="999"
                                  @edit-num="EditNum"
                         >
                         </buy-num>
                         <!--价格-->
-                        <div class="price1">¥ {{item.productPrice}}</div>
+                        <div class="price1">¥ {{item.price}}</div>
                       </div>
                     </div>
                   </div>
@@ -86,7 +83,6 @@
                   <div class="shipping-total shipping-price"><h4
                     class="highlight">应付总额：<span>￥</span><i v-text="checkPrice"></i>
                   </h4>
-                    <h5 class="shipping-tips ng-scope">应付总额不含运费</h5>
                   </div>
                 </div>
                 <y-button :classStyle="checkNum > 0?'main-btn':'disabled-btn'"
@@ -114,7 +110,7 @@
   </div>
 </template>
 <script>
-  import { cartEdit, editCheckAll, cartDel } from '/api/goods'
+  import { cartEdit, editCheckAll, cartDel } from '/api/books'
   import { mapMutations, mapState } from 'vuex'
   import YButton from '/components/YButton'
   import YHeader from '/common/header'
@@ -136,15 +132,15 @@
       },
       // 计算总数量
       totalNum () {
-        return this.cartList.reduce((accumulator, item) => accumulator + item.productNum, 0)
+        return this.cartList.reduce((accumulator, item) => accumulator + item.bookNum, 0)
       },
       // 选中的总价格
       checkPrice () {
-        return this.cartList.reduce((a, item) => item.checked === '1' ? a + (item.productNum * item.productPrice) : a, 0)
+        return this.cartList.reduce((a, item) => item.checked === '1' ? a + (item.bookNum * item.price) : a, 0)
       },
       // 选中的商品数量
       checkNum () {
-        return this.cartList.reduce((accumulator, item) => item.checked === '1' ? accumulator + item.productNum : accumulator, 0)
+        return this.cartList.reduce((accumulator, item) => item.checked === '1' ? accumulator + item.bookNum : accumulator, 0)
       }
     },
     methods: {
@@ -157,45 +153,47 @@
         })
       },
       // 修改购物车
-      _cartEdit (productId, productNum, checked) {
+      _cartEdit (bookId, bookNum, checked) {
         cartEdit(
           {
-            productId,
-            productNum,
+            bookId,
+            bookNum,
             checked
           }
         ).then(res => {
           if (res.status === '0') {
             this.EDIT_CART(
               {
-                productId,
+                bookId,
                 checked,
-                productNum
+                bookNum
               }
             )
+          }else {
+            this.INIT_BUYCART()
           }
         })
       },
       // 修改购物车
       editCart (type, item) {
         if (type && item) {
-          let {checked, productId, productNum} = item
+          let {checked, bookId, bookNum} = item
           // 勾选
           if (type === 'check') {
             let newChecked = checked === '1' ? '0' : '1'
-            this._cartEdit(productId, productNum, newChecked)
+            this._cartEdit(bookId, bookNum, newChecked)
           }
         } else {
           console.log('缺少所需参数')
         }
       },
-      EditNum (productNum, productId, checked) { // 数量
-        this._cartEdit(productId, productNum, checked)
+      EditNum (bookNum, bookId, checked) { // 数量
+        this._cartEdit(bookId, bookNum, checked)
       },
       // 删除整条购物车
-      cartdel (productId) {
-        cartDel({productId}).then(res => {
-          this.EDIT_CART({productId})
+      cartdel (bookId) {
+        cartDel({bookId}).then(res => {
+          this.EDIT_CART({bookId})
         })
       },
       checkout () {

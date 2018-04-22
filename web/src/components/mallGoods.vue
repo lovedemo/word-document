@@ -2,32 +2,32 @@
   <div class="good-item">
     <div>
       <div class="good-img">
-        <router-link :to="'booksDetails?productId='+msg.productId">
-          <img v-lazy="msg.productImageBig" :alt="msg.productName">
+        <router-link :to="'booksDetails?bookId='+msg.bookId">
+          <img v-lazy="msg.imgList" :alt="msg.bookName">
         </router-link>
       </div>
-      <h6 class="good-title">{{msg.productName}}</h6>
-      <h3 class="sub-title ellipsis">{{msg.sub_title}}</h3>
+      <h6 class="good-title">{{msg.bookName}}</h6>
+      <h3 class="sub-title ellipsis">{{msg.info}}</h3>
       <div class="good-price pr">
         <div class="ds pa">
-          <router-link :to="'booksDetails?productId='+msg.productId">
+          <router-link :to="'booksDetails?bookId='+msg.bookId">
             <y-button text="查看详情" style="margin: 0 5px"/>
           </router-link>
           <y-button text="加入购物车"
                     style="margin: 0 5px"
-                    @btnClick="addCart(msg.productId,msg.salePrice,msg.productName,msg.productImageBig)"
+                    @btnClick="addCart(msg.bookId,msg.price,msg.bookName,msg.imgList)"
                     classStyle="main-btn"
           ></y-button>
         </div>
         <p><span style="font-size: 16px">￥</span>
-          {{msg.salePrice}}</p>
+          {{msg.price}}</p>
       </div>
     </div>
   </div>
 </template>
 <script>
   import YButton from '/components/YButton'
-  import { addCart } from '/api/goods'
+  import { addCart } from '/api/books'
   import { mapMutations, mapState } from 'vuex'
   export default {
     props: {
@@ -39,17 +39,17 @@
     methods: {
       ...mapMutations(['ADD_CART', 'ADD_ANIMATION', 'SHOW_CART']),
       booksDetails (id) {
-        this.$router.push({path: 'booksDetails/productId=' + id})
+        this.$router.push({path: 'booksDetails/bookId=' + id})
       },
       addCart (id, price, name, img) {
         if (!this.showMoveImg) {     // 动画是否在运动
           if (this.login) { // 登录了 直接存在用户名下
-            addCart({productId: id}).then(res => {
+            addCart({bookId: id}).then(res => {
               // 并不重新请求数据
-              this.ADD_CART({productId: id, productPrice: price, productName: name, productImg: img})
+              this.ADD_CART({bookId: id, price: price, bookName: name, imgList: img})
             })
-          } else { // 未登录 vuex
-            this.ADD_CART({productId: id, productPrice: price, productName: name, productImg: img})
+          } else { // 未登录 本地vuex
+            this.ADD_CART({bookId: id, price: price, bookName: name, imgList: img})
           }
           // 加入购物车动画
           let dom = event.target

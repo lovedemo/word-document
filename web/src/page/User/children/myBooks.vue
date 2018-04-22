@@ -18,8 +18,8 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="bookId"
-              label="书籍ID"
+              prop="bookISBN"
+              label="书籍ISBN"
             >
             </el-table-column>
             <el-table-column
@@ -32,33 +32,37 @@
               label="价格">
             </el-table-column>
             <el-table-column
+              prop="num"
+              label="数量">
+            </el-table-column>
+            <el-table-column
               prop="info"
               label="书籍描述">
             </el-table-column>
-            <el-table-column
-              prop="type"
-              label="类别">
-            </el-table-column>
+
           </el-table>
         </div>
 
         <el-dialog title="添加书籍" :visible.sync="dialogFormVisible">
-          <el-form :model="form">
-            <el-form-item label="书籍名" :label-width="formLabelWidth">
+          <el-form :model="form" :rules="rules" ref="ruleForm">
+            <el-form-item label="书籍名" :label-width="formLabelWidth" prop="bookName">
               <el-input v-model="form.bookName" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="书籍描述" :label-width="formLabelWidth">
+            <el-form-item label="ISBN" :label-width="formLabelWidth" prop="bookISBN">
+              <el-input v-model="form.bookISBN" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="书籍描述" :label-width="formLabelWidth" >
               <el-input v-model="form.info" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="价格" :label-width="formLabelWidth">
+            <el-form-item label="价格" :label-width="formLabelWidth" prop="price">
               <el-input v-model="form.price" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="类别" :label-width="formLabelWidth">
-              <el-input v-model="form.type" auto-complete="off"></el-input>
+            <el-form-item label="数量" :label-width="formLabelWidth" prop="num">
+              <el-input v-model="form.num" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="上传图片" :label-width="formLabelWidth">
               <el-upload
-                action="http://localhost:3333/users/bookImg"
+                action="/users/bookImg"
                 list-type="picture-card"
                 :on-preview="handlePictureCardPreview"
                 :on-success="handlePictureSuccess"
@@ -95,9 +99,25 @@
         tableData:[],
         form: {
           bookName:'',
+          bookISBN:'',
+          num:'',
           info:'',
           price:'',
-          type:'',
+
+        },
+        rules: {
+          bookName: [
+            { required: true, message: '请输入书籍名', trigger: 'blur' },
+          ],
+          bookISBN: [
+            { required: true, message: '请输入书籍ISBN', trigger: 'change' }
+          ],
+          price: [
+            { required: true, message: '请输入价格', trigger: 'change' }
+          ],
+          num: [
+            { required: true, message: '请输入数量', trigger: 'change' }
+          ],
 
         },
         dialogImageUrl: '',
@@ -121,9 +141,7 @@
         this.imgList=res.url;
        console.log(res,file)
       },
-      checkForm(){
-        return !(this.form.bookName === '' || this.form.price === '');
-      },
+
       initBook(){
         getMybook().then(res=>{
           console.log(res);
@@ -131,18 +149,37 @@
         })
       },
       submitBook(){
-       if(this.checkForm()){
-         let postdata=this.form;
-         postdata.imgList=this.imgList;
-         addBook(postdata).then(res=>{
-           console.log(res.status)
-           if(res.status=='0'){
-             //成功上传
-              this.initBook();
-             this.dialogFormVisible=false;
-           }
-         })
-       }
+        this.$refs['ruleForm'].validate((valid) => {
+          if (valid) {
+            //填写正确，在这里提交
+            let postdata=this.form;
+            console.log(postdata);
+            postdata.imgList=this.imgList;
+            addBook(postdata).then(res=>{
+              console.log(res.status)
+              if(res.status=='0'){
+                //成功上传
+                this.initBook();
+                this.form= {
+                  bookName:'',
+                    bookISBN:'',
+                    num:'',
+                    info:'',
+                    price:'',
+
+                },
+                this.dialogFormVisible=false;
+              }
+            })
+          } else {
+            //填写错误
+            return false;
+          }
+        });
+
+
+
+
       }
     }
 

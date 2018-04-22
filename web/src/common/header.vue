@@ -52,25 +52,24 @@
                           <li class="clearfix" v-for="(item,i) in cartList" :key="i">
                             <div class="cart-item">
                               <div class="cart-item-inner">
-                                <router-link :to="'booksDetails?productId='+item.productId">
+                                <router-link :to="'booksDetails?bookId='+item.bookId">
                                   <div class="item-thumb">
-                                    <img :src="item.productImg">
+                                    <img :src="item.imgList">
                                   </div>
                                 </router-link>
                                 <div class="item-desc">
                                   <div class="cart-cell">
                                     <h4>
-                                      <router-link :to="'booksDetails?productId='+item.productId"
-                                                   v-text="item.productName"></router-link>
+                                      <router-link :to="'booksDetails?bookId='+item.bookId"
+                                                   v-text="item.bookName"></router-link>
                                     </h4>
-                                    <p class="attrs"><span>白色</span>
-                                    </p> <h6><span class="price-icon">¥</span><span
-                                    class="price-num">{{item.productPrice}}</span><span
-                                    class="item-num">x {{item.productNum}}</span>
+                                     <h6><span class="price-icon">¥</span><span
+                                    class="price-num">{{item.price}}</span><span
+                                    class="item-num">x {{item.bookNum}}</span>
                                   </h6></div>
                                 </div>
 
-                                <div class="del-btn del" @click="delGoods(item.productId)">删除</div>
+                                <div class="del-btn del" @click="delGoods(item.bookId)">删除</div>
                               </div>
                             </div>
                           </li>
@@ -123,7 +122,7 @@
 <script>
   import YButton from '/components/YButton'
   import { mapMutations, mapState } from 'vuex'
-  import { getCartList, cartDel } from '/api/goods'
+  import { getCartList, cartDel } from '/api/books'
   import { loginOut } from '/api/index'
   import { setStore, removeStore } from '/utils/storage'
 
@@ -168,7 +167,7 @@
       totalPrice () {
         let totalPrice = 0
         this.cartList.length && this.cartList.forEach(item => {
-          totalPrice += (item.productNum * item.productPrice)
+          totalPrice += (item.bookNum * item.price)
         })
         return totalPrice
       },
@@ -176,7 +175,7 @@
       totalNum () {
         let totalNum = 0
         this.cartList.length && this.cartList.forEach(item => {
-          totalNum += (item.productNum)
+          totalNum += (item.bookNum)
         })
         return totalNum
       }
@@ -197,13 +196,13 @@
         }).then(this.INIT_BUYCART)
       },
       // 删除商品
-      delGoods (productId) {
+      delGoods (bookId) {
         if (this.login) { // 登陆了
-          cartDel({productId}).then(res => {
-            this.EDIT_CART({productId})
+          cartDel({bookId}).then(res => {
+            this.EDIT_CART({bookId})
           })
         } else {
-          this.EDIT_CART({productId})
+          this.EDIT_CART({bookId})
         }
       },
       toCart () {
