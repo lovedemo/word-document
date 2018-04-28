@@ -52,8 +52,6 @@ export default new Router({
         {path: 'information', name: '账户资料', component: information},
         {path: 'addressList', name: '收货地址', component: addressList},
         {path: 'myBooks', name: '我的书籍', component: myBooks},
-        {path: 'support', name: '售后服务', component: support},
-        {path: 'aihuishou', name: '以旧换新', component: aihuishou}
       ]
     },
     {path: '/checkout', name: 'checkout', component: checkout},

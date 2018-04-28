@@ -5,7 +5,7 @@
         <div class="add-btn">
           <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">添加</el-button>
         </div>
-        <div class='books-table' style="text-align: center">
+        <div class='books-table' >
           <el-table
             :data="tableData"
             style="width: 100%">

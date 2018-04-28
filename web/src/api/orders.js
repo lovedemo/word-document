@@ -3,7 +3,11 @@ import http from './public'
 export const addOrder = (params) => {
   return http.fetchPost('/orders/addOrder', params)
 };
-/*
-export const getMybook = (params) => {
-  return http.fetchGet('/books/getMybook', params)
-};*/
+// 订单列表
+export const orderList = (params) => {
+  return http.fetchPost('/orders/orderList', params)
+};
+// 订单列表
+export const changeStatus = (params) => {
+  return http.fetchPost('/orders/changeStatus', params)
+};

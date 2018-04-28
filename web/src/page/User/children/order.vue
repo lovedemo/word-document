@@ -1,72 +1,160 @@
 <template>
-  <div>
+  <div >
     <y-shelf title="我的订单">
-      <div slot="content">
-        <div v-if="orderList.length">
-          <div v-for="(item,i) in orderList" :key="i">
-            <div class="gray-sub-title cart-title">
-              <div class="first">
-                <div>
-                  <span class="date" v-text="item.createDate"></span>
-                  <span class="order-id"> 订单号： <a href="javascript:;">{{item.orderId}}</a> </span>
-                </div>
-                <div class="f-bc">
-                  <span class="price">单价</span>
-                  <span class="num">数量</span>
-                  <span class="operation">商品操作</span>
-                </div>
-              </div>
-              <div class="last">
-                <span class="sub-total">实付金额</span>
-                <span class="order-detail"> <a href="javascript:;">查看详情<em class="icon-font"></em></a> </span>
-              </div>
-            </div>
-            <div class="pr">
-              <div class="cart" v-for="(good,j) in item.goodsList" :key="j">
-                <div class="cart-l" :class="{bt:j>0}">
-                  <div class="car-l-l">
-                    <div class="img-box"><img
-                      :src="good.productImg"
-                      alt=""></div>
-                    <div class="ellipsis">{{good.productName}}</div>
-                  </div>
-                  <div class="cart-l-r">
-                    <div>¥ {{good.productPrice}}</div>
-                    <div class="num">{{good.productNum}}</div>
-                    <div class="type"><a @click="_delOrder(item.orderId,i)" href="javascript:;" v-if="j<1"
-                                         class="del-order">删除此订单</a>
+      <div slot="content" class="mydiv">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="我是买家" name="first">
+
+            <div v-if="orderList.length">
+              <el-table
+                :data="orderList"
+                style="width: 100%">
+                <el-table-column
+                  label="封面">
+                  <template slot-scope="scope" class="book">
+                    <img class="bookImg" v-if="scope.row.books[0]" :src="scope.row.books[0].imgList">
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="书籍名称">
+                  <template slot-scope="scope" >
+                    <div class="book-info">
+                      <p>
+                        {{scope.row.books[0].bookName}}
+                      </p>
                     </div>
-                  </div>
-                </div>
-                <div class="cart-r">
-                  <span></span>
-                  <span></span>
-                </div>
-              </div>
-              <div class="prod-operation pa" style="right: 0;top: 0;">
-                <div class="total">¥ {{item.orderTotal}}</div>
-                <div class="status"> {{item.orderStatus === '1' ? '已支付' : '已关闭'}}  </div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="价格">
+                  <template slot-scope="scope" >
+                    <div class="book-info">
+                      <p>
+                        {{scope.row.books[0].price}}
+                      </p>
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="数量">
+                  <template slot-scope="scope" >
+                    <div class="book-info">
+                      <p>
+                        {{scope.row.books[0].bookNum}}
+                      </p>
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="状态">
+                  <template slot-scope="scope" >
+                    <div >
+                      {{status[scope.row.status]}}
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="操作">
+                  <template slot-scope="scope" >
+                    <div >
+                      <el-button v-if="scope.row.status==1" @click=changeStatus(scope.row,0)>取消</el-button>
+                      <el-button v-if="scope.row.status==2" @click=changeStatus(scope.row,3)>确认收货</el-button>
+                    </div>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div v-else>
+              <div style="padding: 100px 0;text-align: center">
+                你还未创建过订单
               </div>
             </div>
+        </el-tab-pane>
+        <el-tab-pane label="我是卖家" name="second">
+          <div v-if="nextList.length">
+            <el-table
+              :data="nextList"
+              style="width: 100%">
+              <el-table-column
+                label="封面">
+                <template slot-scope="scope" class="book">
+                  <img class="bookImg" v-if="scope.row.books[0]" :src="scope.row.books[0].imgList">
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="书籍信息">
+                <template slot-scope="scope" >
+                  <div class="book-info">
+                    <p>
+                     {{scope.row.books[0].bookName}}
+                    </p>
+                    <p>
+                      价格： {{scope.row.books[0].price}}
+                    </p>
+                    <p>
+                     数量： {{scope.row.books[0].bookNum}}
+                    </p>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="地址信息">
+                <template slot-scope="scope" >
+                  <div >
+                    <p>
+                       {{scope.row.address.userName}}
+                    </p>
+                    <p>
+                      {{scope.row.address.tel}}
+                    </p>
+                    <p>
+                      {{scope.row.address.streetName}}
+                    </p>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="状态">
+                <template slot-scope="scope" >
+                  <div >
+                    {{status[scope.row.status]}}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="操作">
+                <template slot-scope="scope" >
+                  <div >
+                    <el-button v-if="scope.row.status==1" @click=changeStatus(scope.row,2)>发货</el-button>
+
+                  </div>
+                </template>
+              </el-table-column>
+
+            </el-table>
           </div>
-        </div>
-        <div v-else>
-          <div style="padding: 100px 0;text-align: center">
-            你还未创建过订单
+          <div v-else>
+            <div style="padding: 100px 0;text-align: center">
+              你还没有出售的订单
+            </div>
           </div>
-        </div>
+        </el-tab-pane>
+      </el-tabs>
       </div>
     </y-shelf>
 
   </div>
 </template>
 <script>
-  import { orderList, delOrder } from '/api/books'
+  import { orderList ,changeStatus} from '/api/orders'
   import YShelf from '/components/shelf'
   export default {
     data () {
       return {
-        orderList: []
+        orderList: [],
+        activeName:'first',
+        nextList:[],
+        status:["已取消","待发货",'已发货','已完成'],
       }
     },
     methods: {
@@ -75,15 +163,26 @@
           this.orderList = res.result
         })
       },
-      _delOrder (orderId, i) {
-        delOrder({orderId}).then(res => {
-          if (!res.status) {
-            this.orderList.splice(i, 1)
-          } else {
-            alert('删除失败')
-          }
+      handleClick(tab, event) {
+        if(tab.name=='second'){
+          this._nextList();
+        }else {
+          this._orderList()
+        }
+      },
+      _nextList(){
+        orderList({type:1}).then(res => {
+          this.nextList = res.result
         })
-      }
+      },
+      changeStatus(row,newStatus){
+        changeStatus({orderId:row.orderId,status:newStatus}).then(res =>{
+          console.log(res)
+          this._nextList();
+          this._orderList();
+        })
+      },
+
     },
     created () {
       this._orderList()
@@ -93,9 +192,25 @@
     }
   }
 </script>
-<style lang="scss" scoped>
+<style lang="scss" >
   @import "../../../assets/style/mixin";
+  .mydiv{
+    margin: 20px;
+  }
+  img{
+    width: 100px;
+    height: 100px;
+  }
+  .book{
+    float:left ;
+  }
+  .book-info{
+    line-height: 35px;
+   p{
+     font-size: 20px !important;
 
+   }
+  }
   .gray-sub-title {
     height: 38px;
     padding: 0 24px;

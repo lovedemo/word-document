@@ -227,7 +227,7 @@
           orderPrice: this.checkPrice,
           books: books,
         }).then(res => {
-          if (!res.status) {
+          if (res.status=='0') {
             this.$router.push({path: '/order/paysuccess', query: {price: this.checkPrice}})
           } else {
             console.log("res",res.message);

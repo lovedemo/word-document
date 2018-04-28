@@ -192,7 +192,14 @@ router.post('/updateheadimage', function (req, res, next) {
     }
 });
 
+//修改用户信息
+router.post('/changeUserMore', async (req, res) => {
+
+
+});
+
 // 获取用户信息
+
 router.post('/userInfo', async (req, res) => {
     const {userId} = req.cookies
     if (userId) {

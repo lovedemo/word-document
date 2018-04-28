@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
     "avatar": String,
     "userName": String,
     "userPwd": String,
-    "orderList": Array,
+    "userMore": Object,
     "cartList": [
         {
             "bookId": String,

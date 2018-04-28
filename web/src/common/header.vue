@@ -146,10 +146,7 @@
         }, {
           text: '收货地址',
           link: '/user/addressList'
-        }, {
-          text: '售后服务',
-          link: '/user/support'
-        }, {
+        },  {
           text: '我的书籍',
           link: '/user/myBooks'
         }],

@@ -40,8 +40,6 @@
           {name: '账户资料', path: 'information'},
           {name: '收货地址', path: 'addressList'},
           {name: '我的书籍', path: 'myBooks'},
-          {name: '售后服务', path: 'support'},
-          {name: '以旧换新', path: 'aihuishou'}
         ],
         editAvatar: true
       }
