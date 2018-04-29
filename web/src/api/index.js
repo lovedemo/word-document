@@ -27,4 +27,9 @@ export const updateheadimage = (params) => {
 export const productHome = (params) => {
   return http.fetchGet('/goods/productHome', params)
 }
+// 修改资料 changeUserMore
+export const changeUser = (params) => {
+  return http.fetchPost('/users/changeUserMore', params)
+}
+
 

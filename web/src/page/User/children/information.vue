@@ -5,8 +5,24 @@
         <div class="avatar-box">
           <div class=img-box><img :src="userInfo.info.avatar" alt=""></div>
           <div class="r-box">
-            <h3>修改头像</h3>
+            <h3>头像</h3>
             <y-button text="更换头像" classStyle="main-btn" style="margin: 0;" @btnClick="editAvatar()"></y-button>
+
+          </div>
+        </div>
+        <div class="info-box">
+
+          <el-form label-position="right" label-width="80px" :model="userMore">
+            <el-form-item label="联系方式">
+              <el-input v-model="userMore.tel" :disabled="canChange"></el-input>
+            </el-form-item>
+            <el-form-item label="就读学校">
+              <el-input v-model="userMore.school" :disabled="canChange"></el-input>
+            </el-form-item>
+          </el-form>
+          <div style="margin-left: 120px;">
+            <el-button type="success" v-if="canChange" @click="canChange=false"> 修改资料</el-button>
+            <el-button type="danger" v-if="!canChange" @click="changeUserMore()"> 保存资料</el-button>
           </div>
         </div>
         <div class="edit-avatar" v-if="editAvatarShow">
@@ -76,13 +92,16 @@
 </template>
 <script>
   import YButton from '/components/YButton'
-  import { upload, updateheadimage } from '/api/index'
+  import { upload, updateheadimage, changeUser } from '/api/index'
+  import { userInfo } from '/api'
   import YShelf from '/components/shelf'
   import vueCropper from 'vue-cropper'
   import { mapState, mapMutations } from 'vuex'
   export default {
     data () {
       return {
+        userMore:{},
+        canChange:true,
         imgSrc: '',
         editAvatarShow: false,
         cropContext: '',
@@ -106,6 +125,13 @@
         }
       }
     },
+    mounted(){
+      userInfo().then(res=>{
+        this.userMore=res.result.userMore||{tel:"",school:""};
+      })
+
+      console.log(this.userMore,this.userInfo)
+    },
     computed: {
       ...mapState(['userInfo'])
     },
@@ -113,6 +139,14 @@
       ...mapMutations([
         'RECORD_USERINFO'
       ]),
+      changeUserMore(){
+        changeUser(this.userMore).then(
+          res=>{
+            console.log(res)
+            this.canChange=true;
+          }
+        )
+      },
       upimg (e) {
         var file = e.target.files[0]
         if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(e.target.value)) {
@@ -167,6 +201,11 @@
 <style lang="scss" scoped>
   @import "../../../assets/style/mixin";
 
+  .info-box{
+    width: 500px;
+    margin-left: 100px;
+    margin-bottom: 100px;
+  }
   .avatar-box {
     height: 124px;
     display: flex;

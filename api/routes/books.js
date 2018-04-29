@@ -39,14 +39,20 @@ router.get('/getMybook',  (req, res, next) => {
 
 // 书籍列表
 router.get('/getAllBooks',  (req, res, next) => {
+
+
     let sort = req.query.sort || '';
     let page = +req.query.page || 1;
-    let pageSize = +req.query.pageSize || 20;
-    let priceGt = +req.query.priceGt || ''; // 大于
-    let priceLte = +req.query.priceLte || ''; // 小于
+    let pageSize = +req.query.pageSize || 8;
+    let findKey= req.query.findKey ;
+    // let findType =req.query.findType;
+    // let priceGt = +req.query.priceGt || ''; // 大于
+    // let priceLte = +req.query.priceLte || ''; // 小于
     let skip = (page - 1) * pageSize;//跳过多少条
-    let params = {};
-    if (priceGt || priceLte) {
+
+    let reg=new RegExp(findKey,'i');
+    let params = {$or:[{bookName:reg},{bookISBN:reg},{info:reg}]};
+   /* if (priceGt || priceLte) {
         if (priceGt && priceLte) {
             if (priceGt > priceLte) {
                 let l = priceLte, g = priceGt;
@@ -67,7 +73,8 @@ router.get('/getAllBooks',  (req, res, next) => {
                 }
             }
         }
-    }
+    }*/
+
 
     let bookModel = Book.find(params).skip(skip).limit(pageSize);
     // 1 升序 -1 降序

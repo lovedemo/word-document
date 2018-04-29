@@ -5,9 +5,8 @@
            @mouseover="bgOver($refs.bg)"
            @mousemove="bgMove($refs.bg,$event)"
            @mouseout="bgOut($refs.bg)">
-        <span class="img a"></span>
-        <span class="text b">以傲慢与偏执<br/>回敬傲慢与偏见</span>
-        <span class="copyright c">code by qingjin.me | picture from t.tt</span>
+        <span class="text b">没有读不旧的书，<br/>只有学不尽的知识</span>
+        <!--<span class="copyright c">code by qingjin.me | picture from t.tt</span>-->
       </div>
     </div>
 
@@ -86,11 +85,11 @@
       }
     },
     mounted () {
-      productHome().then(res => {
+    /*  productHome().then(res => {
         const { home_floors, home_hot } = res.result
         this.floors = home_floors
         this.hot = home_hot
-      })
+      })*/
     },
     components: {
       YShelf,
@@ -134,7 +133,7 @@
     height: 100%;
     bottom: 5px;
     left: 0;
-    background: url("/static/images/banner-3d.png") center no-repeat;
+    /*background: url("/static/images/banner-3d.png") center no-repeat;*/
     background-size: 95% 100%;
   }
 
@@ -143,7 +142,7 @@
     top: 20%;
     right: 10%;
     font-size: 30px;
-    color: #fff;
+    color: #3f3f3f;
     text-align: right;
     font-weight: lighter;
   }

@@ -194,7 +194,16 @@ router.post('/updateheadimage', function (req, res, next) {
 
 //修改用户信息
 router.post('/changeUserMore', async (req, res) => {
-
+    let info= req.body;
+    const {userId} = req.cookies
+    let userDoc=await  User.findOne({userId});
+    userDoc.userMore=info;
+    userDoc.save();
+    res.json({
+        status: '0',
+        msg: 'suc',
+        result: userDoc.userMore
+    })
 
 });
 
@@ -203,13 +212,14 @@ router.post('/changeUserMore', async (req, res) => {
 router.post('/userInfo', async (req, res) => {
     const {userId} = req.cookies
     if (userId) {
-        let {name, avatar} = await  User.findOne({userId})
+        let {name, avatar,userMore} = await  User.findOne({userId})
         res.json({
             status: 0,
             msg: 'suc',
             result: {
                 name,
-                avatar
+                avatar,
+                userMore
             }
         })
     } else {

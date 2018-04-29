@@ -2,7 +2,17 @@
   <div class="goods">
     <div class="nav">
 
-      <div class="w">
+      <div class="w ">
+        <div class="find">
+          <el-input placeholder="书名\ISBN\描述" v-model="findKey" class="input-with-select">
+
+            <el-button slot="append" icon="el-icon-search" @click="_getBooks">搜索</el-button>
+          </el-input>
+        </div>
+
+
+      </div>
+     <!-- <div class="w">
         <a href="javascript:;" :class="{active:sortType===1}" @click="reset()">综合排序</a>
         <a href="javascript:;" @click="sort(1)" :class="{active:sortType===2}">价格从低到高</a>
         <a href="javascript:;" @click="sort(-1)" :class="{active:sortType===3}">价格从高到低</a>
@@ -12,20 +22,33 @@
           <input type="number" placeholder="价格" v-model="params.max">
           <y-button text="确定" classStyle="main-btn" @btnClick="reset" style="margin-left: 10px;"></y-button>
         </div>
-      </div>
+      </div>-->
     </div>
 
     <!--商品-->
-    <div class="goods-box w">
-      <mall-goods v-for="(item,i) in computer" :key="i" :msg="item"></mall-goods>
+    <div class="nobook"  v-if="!books.length">
+      <img src="../../../static/images/nobook.jpg">
     </div>
-    <div v-show="!busy"
+    <div class="goods-box w">
+      <mall-goods v-for="(item,i) in books" :key="i" :msg="item"></mall-goods>
+    </div>
+
+    <div class="page">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :current-page="currentPage"
+        :page-count="pageCount">
+      </el-pagination>
+    </div>
+
+   <!-- <div v-show="!busy"
          class="w load-more"
          v-infinite-scroll="loadMore"
          infinite-scroll-disabled="busy"
          infinite-scroll-distance="100">
       正在加载中...
-    </div>
+    </div>-->
   </div>
 </template>
 <script>
@@ -35,41 +58,49 @@
   export default {
     data () {
       return {
-        computer: [],
-        busy: false,
-        timer: null,
+        findKey:'',
+        findType:'书名',
+        books: [],
+        // busy: false,
+        // timer: null,
         sortType: 1,
         windowHeight: null,
         windowWidth: null,
-        params: {
+        pageCount:1,
+        currentPage:1,
+      /*  params: {
           page: 1,  // 页码
           sort: '', // 排序
           min: '',  // 最小价格
           max: ''
-        }
+        }*/
       }
     },
     methods: {
-      _getComputer (flag) {
-        const {page, sort, min, max} = this.params
+
+      find(){
+        console.log(this.findKey,this.findType)
+      },
+      _getBooks (flag) {
+       // const {page, sort, min, max} = this.params
         let params = {
-          page,
-          sort,
-          priceGt: min,
-          priceLte: max
+          page:this.currentPage,
+          findKey:this.findKey,
         }
         getAllBooks(params).then(res => {
-          if (res.result.count) {
-            let data = res.result.data
+          let data = res.result.data;
+          this.books = data
+         /* if (res.result.count) {
+
             if (flag) {
-              this.computer = this.computer.concat(data)
+              this.books = this.books.concat(data)
             } else {
-              this.computer = data
+              this.books = data
             }
           } else {
             clearTimeout(this.timer)
             this.busy = true
-          }
+          }*/
         })
       },
       // 默认排序
@@ -78,7 +109,7 @@
         this.params.sort = ''
         this.params.page = 1
         this.busy = false
-        this._getComputer()
+        this._getBooks()
       },
       // 价格排序
       sort (v) {
@@ -86,20 +117,20 @@
         this.params.sort = v
         this.params.page = 1
         this.busy = false
-        this._getComputer()
+        this._getBooks()
       },
       // 加载更多
       loadMore () {
        /* this.busy = true
         this.timer = setTimeout(() => {
           this.params.page++
-          this._getComputer(true)
+          this._getBooks(true)
           this.busy = false
         }, 500)*/
       }
     },
     created () {
-      this._getComputer()
+      this._getBooks()
     },
     mounted () {
       this.windowHeight = window.innerHeight
@@ -115,6 +146,29 @@
   @import "../../assets/style/mixin";
   @import "../../assets/style/theme";
 
+  .find{
+
+    margin: 0 auto;
+      width: 500px;
+    .el-select{
+      width: 80px;
+    }
+
+  }
+  .page{
+    margin: 20px;
+  }
+  .nobook{
+    img{
+      height: 300px;
+      width: 700px;
+    }
+    text-align: center;
+    padding: 20px;
+    color: #8d8d8d;
+    height: 500px;
+    background-color: #e6e6e6;
+  }
   .nav {
     height: 60px;
     line-height: 60px;
@@ -157,6 +211,9 @@
     text-align: center;background: #fff
   }
   .goods-box {
+    &:after{
+      content:"";clear: both;display: block;
+    }
     > div {
       float: left;
       border: 1px solid #efefef;
