@@ -37,8 +37,10 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :current-page="currentPage"
-        :page-count="pageCount">
+        :current-page.sync="currentPage"
+        :page-count="pageCount"
+        @current-change="change()"
+      >
       </el-pagination>
     </div>
 
@@ -78,6 +80,14 @@
     },
     methods: {
 
+      change(){
+        this.$nextTick(()=>{
+          console.log(this.currentPage)
+          // this.currentPage++;
+          this._getBooks();
+        })
+
+      },
       find(){
         console.log(this.findKey,this.findType)
       },
@@ -90,6 +100,7 @@
         getAllBooks(params).then(res => {
           let data = res.result.data;
           this.books = data
+          this.pageCount=res.result.total_count;
          /* if (res.result.count) {
 
             if (flag) {

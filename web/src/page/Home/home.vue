@@ -12,9 +12,9 @@
 
 
     <section class="w mt30 clearfix">
-      <y-shelf title="热门商品">
+      <y-shelf title="最新商品">
         <div slot="content" class="hot">
-          <mall-goods :msg="item" v-for="(item,i) in hot" :key="i"></mall-goods>
+          <mall-goods :msg="item" v-for="(item,i) in recent" :key="i"></mall-goods>
         </div>
       </y-shelf>
     </section>
@@ -31,7 +31,7 @@
   </div>
 </template>
 <script>
-  import { productHome } from '/api'
+  import { getRecentBooks } from '/api/books'
   import YShelf from '/components/shelf'
   import product from '/components/product'
   import mallGoods from '/components/mallGoods'
@@ -46,7 +46,7 @@
           offsetHeight: 0
         },
         floors: [],
-        hot: []
+        recent: []
       }
     },
     methods: {
@@ -85,6 +85,9 @@
       }
     },
     mounted () {
+      getRecentBooks().then(res=>{
+        this.recent=res.result.data;
+      })
     /*  productHome().then(res => {
         const { home_floors, home_hot } = res.result
         this.floors = home_floors
@@ -249,13 +252,12 @@
     margin-top: 30px;
   }
 
-  .hot {
-    display: flex;
-    > div {
-      flex: 1;
-      width: 25%;
-    }
-  }
+ .hot{
+   > div {
+     float: left;
+     border: 1px solid #efefef;
+   }
+ }
 
   .floors {
     width: 100%;

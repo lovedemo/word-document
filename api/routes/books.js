@@ -37,11 +37,35 @@ router.get('/getMybook',  (req, res, next) => {
    // console.log(mybooks)
 });
 
+// 最新书籍
+router.get('/getRecentBooks',  (req, res, next) => {
+    let bookModel = Book.find().sort({_id: -1}).limit(8);
+
+
+    bookModel.exec(function (err, doc) {
+        if (err) {
+            res.json({
+                status: '1',
+                msg: err.message,
+                result: ''
+            })
+        } else {
+            res.json({
+                status: '0',
+                msg: 'successful',
+                result: {
+                    count: doc.length,
+                    data: doc
+                }
+            })
+        }
+    })
+});
 // 书籍列表
-router.get('/getAllBooks',  (req, res, next) => {
+router.get('/getAllBooks', async  (req, res, next) => {
 
 
-    let sort = req.query.sort || '';
+    let sort = req.query.sort || 1;
     let page = +req.query.page || 1;
     let pageSize = +req.query.pageSize || 8;
     let findKey= req.query.findKey ;
@@ -75,10 +99,15 @@ router.get('/getAllBooks',  (req, res, next) => {
         }
     }*/
 
+    let alldoc=await Book.find();
+
+    let allcount=parseInt(alldoc.length/8);
+    if(alldoc.length%8!=0)
+        allcount++;
 
     let bookModel = Book.find(params).skip(skip).limit(pageSize);
     // 1 升序 -1 降序
-    sort && bookModel.sort({'price': sort});
+    sort && bookModel.sort({price: sort});
     bookModel.exec(function (err, doc) {
         if (err) {
             res.json({
@@ -87,10 +116,12 @@ router.get('/getAllBooks',  (req, res, next) => {
                 result: ''
             })
         } else {
+
             res.json({
                 status: '0',
                 msg: 'successful',
                 result: {
+                    total_count:allcount,
                     count: doc.length,
                     data: doc
                 }

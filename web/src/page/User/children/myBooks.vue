@@ -1,3 +1,4 @@
+import {upload} from "../../../api";
 <template>
   <div>
     <y-shelf title="我的书籍">
@@ -64,6 +65,8 @@
               <el-upload
                 action="/users/bookImg"
                 list-type="picture-card"
+                ref="upload"
+                :file-list="fileList"
                 :on-preview="handlePictureCardPreview"
                 :on-success="handlePictureSuccess"
                 :on-remove="handleRemove">
@@ -110,19 +113,20 @@
             { required: true, message: '请输入书籍名', trigger: 'blur' },
           ],
           bookISBN: [
-            { required: true, message: '请输入书籍ISBN', trigger: 'change' }
+            { required: true, message: '请输入书籍ISBN', trigger: 'blur' }
           ],
           price: [
-            { required: true, message: '请输入价格', trigger: 'change' }
+            { required: true, message: '请输入价格', trigger: 'blur' }
           ],
           num: [
-            { required: true, message: '请输入数量', trigger: 'change' }
+            { required: true, message: '请输入数量', trigger: 'blur' }
           ],
 
         },
         dialogImageUrl: '',
         dialogImgVisible: false,
-        imgList:''
+        imgList:'',
+        fileList:[]
       }
     },
     mounted(){
@@ -167,7 +171,8 @@
                     info:'',
                     price:'',
 
-                },
+                };
+                  this.$refs.upload.clearFiles()
                 this.dialogFormVisible=false;
               }
             })

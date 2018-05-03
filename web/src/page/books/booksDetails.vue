@@ -13,7 +13,7 @@
           </div>
           <div class="thumb">
             <div class="big">
-              <img :src="big" :alt="product.bookName">
+              <img :src="product.imgList" :alt="product.bookName">
             </div>
           </div>
         </div>
@@ -26,13 +26,15 @@
             <span>{{product.info}}</span>
             <span class="price">
               <em>¥</em><i>{{product.price}}</i></span>
+            <span>库存：{{product.num}}件</span>
           </h6>
         </div>
         <div class="num">
           <span class="params-name">数量</span>
-          <buy-num @edit-num="editNum" :limit="Number(product.limit_num)"></buy-num>
+          <buy-num @edit-num="editNum" :limit="Number(product.num)"></buy-num>
         </div>
         <div class="buy">
+          <div v-if="product.num>0">
           <y-button text="加入购物车"
                     @btnClick="addCart(product.bookId,product.price,product.bookName,product.imgList)"
                     classStyle="main-btn"
@@ -40,12 +42,16 @@
           <y-button text="现在购买"
                     @btnClick="checkout(product.bookId)"
                     style="width: 145px;height: 50px;line-height: 48px"></y-button>
+          </div>
+          <div v-else>
+           <el-button type="danger" disabled style="width: 200px">已售完</el-button>
+          </div>
         </div>
       </div>
     </div>
     <!--产品信息-->
     <div class="item-info">
-      <y-shelf title="产品信息">
+      <y-shelf title="产品信息" style="display: none">
         <div slot="content">
           <div class="img-item" v-if="productMsg">
             <img v-for="(item, i) in productMsg.pieces_num"
@@ -75,7 +81,8 @@
         small: [],
         big: '',
         product: {},
-        productNum: 1
+        productNum: 1,
+        bookNum:1
       }
     },
     computed: {
@@ -87,12 +94,13 @@
         bookDet({bookId}).then(res => {
           let result = res.result
           this.product = result
-          this.productMsg = result.productMsg || ''
-          this.small = result.productImageSmall
+          // this.productMsg = result.productMsg || ''
+          // this.small = result.productImageSmall
           this.big = this.small[0]
         })
       },
       addCart (id, price, name, img) {
+        if(this.product.num>0){
         if (!this.showMoveImg) {     // 动画是否在运动
           if (this.login) { // 登录了 直接存在用户名下
             addCart({bookId: id, bookNum: this.bookNum}).then(res => {
@@ -124,7 +132,7 @@
           if (!this.showCart) {
             this.SHOW_CART({showCart: true})
           }
-        }
+        }}
       },
       checkout (bookId) {
         this.$router.push({path: '/checkout', query: {bookId, num: this.bookNum}})

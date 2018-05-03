@@ -9,6 +9,10 @@ export const getMybook = (params) => {
 export const getAllBooks = (params) => {
   return http.fetchGet('/books/getAllBooks', params)
 };
+//最新商品
+export const getRecentBooks = (params) => {
+  return http.fetchGet('/books/getRecentBooks', params)
+};
 // 获取购物车列表
 export const getCartList = (params) => {
   return http.fetchPost('/users/cartList', params)

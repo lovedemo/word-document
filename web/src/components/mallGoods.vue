@@ -1,6 +1,9 @@
 <template>
   <div class="good-item">
     <div>
+      <!--<div class="ishas" v-if="msg.num==0">-->
+
+      <!--</div>-->
       <div class="good-img">
         <router-link :to="'booksDetails?bookId='+msg.bookId">
           <img v-lazy="msg.imgList" :alt="msg.bookName">
@@ -9,7 +12,7 @@
       <h6 class="good-title">{{msg.bookName}}</h6>
       <h3 class="sub-title ellipsis">{{msg.info}}</h3>
       <div class="good-price pr">
-        <div class="ds pa">
+        <div class="ds pa" v-if="msg.num>0">
           <router-link :to="'booksDetails?bookId='+msg.bookId">
             <y-button text="查看详情" style="margin: 0 5px"/>
           </router-link>
@@ -19,8 +22,15 @@
                     classStyle="main-btn"
           ></y-button>
         </div>
-        <p><span style="font-size: 16px">￥</span>
+        <div class="ds pa" v-else>
+        <router-link :to="'booksDetails?bookId='+msg.bookId">
+          <y-button disabled text="已售完" style="color: #f00;margin: 0 5px"/>
+        </router-link>
+
+      </div>
+        <p v-if="msg.num>0"><span style="font-size: 16px">￥</span>
           {{msg.price}}</p>
+        <p v-else> 已售完</p>
       </div>
     </div>
   </div>
@@ -77,6 +87,7 @@
 <style lang="scss" rel="stylesheet/scss" scoped>
   @import "../assets/style/mixin";
   @import "../assets/style/theme";
+
 
   .good-item {
     background: #fff;
