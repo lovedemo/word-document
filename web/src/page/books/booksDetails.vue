@@ -89,7 +89,7 @@
       ...mapState(['login', 'showMoveImg', 'showCart'])
     },
     methods: {
-      ...mapMutations(['ADD_CART', 'ADD_ANIMATION', 'SHOW_CART']),
+      ...mapMutations(['ADD_CART', 'ADD_ANIMATION', 'SHOW_CART','INIT_BUYCART']),
       _bookDet (bookId) {
         bookDet({bookId}).then(res => {
           let result = res.result
@@ -105,13 +105,20 @@
           if (this.login) { // 登录了 直接存在用户名下
             addCart({bookId: id, bookNum: this.bookNum}).then(res => {
               // 并不重新请求数据
-              this.ADD_CART({
-                bookId: id,
-                price: price,
-                bookName: name,
-                imgList: img,
-                bookNum: this.bookNum
-              })
+              if(res.status==1){
+                this.$message.error("添加失败，库存不足");
+                this.INIT_BUYCART();
+              }
+              else{
+                this.ADD_CART({
+                  bookId: id,
+                  price: price,
+                  bookName: name,
+                  imgList: img,
+                  bookNum: this.bookNum
+                })
+              }
+
             })
           } else { // 未登录 vuex
             this.ADD_CART({

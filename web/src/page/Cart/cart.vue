@@ -44,19 +44,21 @@
                         <!--总价格-->
                         <div class="subtotal" style="font-size: 14px">¥ {{item.price * item.bookNum}}</div>
                         <!--数量-->
-                        <buy-num :num="item.bookNum"
+                        <el-input-number  style="left: 260px;top: 55px;"
+                                          size="small" v-model="item.bookNum" @change="EditNum(item)" :min="1" ></el-input-number>
+                        <!--<buy-num :num="item.bookNum"
                                  :id="item.bookId"
                                  :checked="item.checked"
                                  style="height: 140px;
                                    display: flex;
                                    align-items: center;
                                    justify-content: center;"
-                                 :limit="item.num"
+                                 :limit="999"
                                  @edit-num="EditNum"
                         >
-                        </buy-num>
+                        </buy-num>-->
                         <!--价格-->
-                        <div class="price1">¥ {{item.price}}</div>
+                        <div class="price1" style="    margin-right: 122px;">¥ {{item.price}}</div>
                       </div>
                     </div>
                   </div>
@@ -170,7 +172,8 @@
               }
             )
           }else {
-            this.INIT_BUYCART()
+            this.INIT_BUYCART();
+            this.$message.error("添加失败，库存不足");
           }
         })
       },
@@ -187,7 +190,9 @@
           console.log('缺少所需参数')
         }
       },
-      EditNum (bookNum, bookId, checked) { // 数量
+      EditNum (item) { // 数量
+        console.log(item)
+        let {bookNum, bookId, checked}=item
         this._cartEdit(bookId, bookNum, checked)
       },
       // 删除整条购物车

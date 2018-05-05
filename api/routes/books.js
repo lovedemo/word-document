@@ -199,6 +199,7 @@ router.post('/addCart',  async (req, res) => {
                 // 商品是否存在
                 let have = false;
 
+                let bigger =false;
                 //  购物车有内容
                 if (userDoc.cartList.length) {
                     // 遍历用户名下的购物车列表
@@ -206,7 +207,16 @@ router.post('/addCart',  async (req, res) => {
                         // 找到该商品
                         if (value.bookId === bookId) {
                             have = true;
+                            let bookDoc=await Book.findOne({bookId:value.bookId});
+
                             value.bookNum += bookNum;
+
+                            if(value.bookNum>bookDoc.num){
+                                // console.log(value.bookNum,"1  ",bookDoc.num)
+                                bigger=true;
+                                value.bookNum=bookDoc.num
+                            }
+                            console.log(value.bookNum,"1  ",bookDoc.num)
                             break;
                         }
                     }
@@ -229,11 +239,20 @@ router.post('/addCart',  async (req, res) => {
 
                 userDoc.save( ()=> {
                     // 保存成功
-                    res.json({
-                        status: 0,
-                        msg: '加入成功',
-                        result: 'suc'
-                    })
+                    if(bigger){
+                        res.json({
+                            status: 1,
+                            msg: '超出库存',
+                            result: ''
+                        })
+                    }else{
+                        res.json({
+                            status: 0,
+                            msg: '加入成功',
+                            result: 'suc'
+                        })
+                    }
+
                 })
 
             } else {
@@ -280,7 +299,7 @@ router.post('/addCartBatch',  async (req, res) => {
                             productMsg.forEach((pro, j) => {
                                 if (item.bookId === pro.bookId) {
                                     sx.push(j)
-                                    item.bookNum += pro.bookNum
+                                    item.bookNum = pro.bookNum
                                 }
                             })
                         })
