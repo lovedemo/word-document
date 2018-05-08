@@ -1,6 +1,5 @@
 const express     = require('express');
 const router      = express.Router();
-const Good        = require('../models/goods');
 const Book        = require('../models/books');
 const User        = require('../models/user');
 const superagent  = require('superagent');

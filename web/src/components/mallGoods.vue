@@ -1,17 +1,17 @@
 <template>
-  <div class="good-item">
+  <div class="book-item">
     <div>
       <!--<div class="ishas" v-if="msg.num==0">-->
 
       <!--</div>-->
-      <div class="good-img">
+      <div class="book-img">
         <router-link :to="'booksDetails?bookId='+msg.bookId">
           <img v-lazy="msg.imgList" :alt="msg.bookName">
         </router-link>
       </div>
-      <h6 class="good-title">{{msg.bookName}}</h6>
+      <h6 class="book-title">{{msg.bookName}}</h6>
       <h3 class="sub-title ellipsis">{{msg.info}}</h3>
-      <div class="good-price pr">
+      <div class="book-price pr">
         <div class="ds pa" v-if="msg.num>0">
           <router-link :to="'booksDetails?bookId='+msg.bookId">
             <y-button text="查看详情" style="margin: 0 5px"/>
@@ -89,7 +89,7 @@
   @import "../assets/style/theme";
 
 
-  .good-item {
+  .book-item {
     background: #fff;
     width: 25%;
     transition: all .5s;
@@ -97,7 +97,7 @@
     &:hover {
       transform: translateY(-3px);
       box-shadow: 1px 1px 20px #999;
-      .good-price p {
+      .book-price p {
         display: none;
       }
       .ds {
@@ -110,14 +110,14 @@
       display: none;
     }
 
-    .good-img {
+    .book-img {
       img {
         margin: 50px auto 10px;
         @include wh(206px);
         display: block;
       }
     }
-    .good-price {
+    .book-price {
       margin: 15px 0;
       height: 30px;
       text-align: center;
@@ -125,7 +125,7 @@
       color: #e4393c;
       font-size: 20px;
     }
-    .good-title {
+    .book-title {
       line-height: 1.2;
       font-size: 16px;
       color: #424242;
