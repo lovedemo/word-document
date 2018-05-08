@@ -35,6 +35,15 @@
           </ul>
         </div>
       </y-shelf>
+      <y-shelf title="付款方式">
+        <div slot="content">
+          <div class="payway">
+          <el-radio v-model="payway" label="1" border>货到付款</el-radio>
+          </div>
+
+        </div>
+      </y-shelf>
+
       <!-- 购物清单 -->
       <y-shelf title="购物清单">
         <div slot="content">
@@ -148,6 +157,7 @@
         popupOpen: false,
         popupTitle: '管理收货地址',
         num: '', // 立刻购买
+        payway:'1',
         bookId: '',
         msg: {
           addressId: '',
@@ -305,6 +315,9 @@
 </script>
 <style lang="scss" rel="stylesheet/scss" scoped>
   // 收货地址
+  .payway{
+    margin: 30px;
+  }
   .address-item-list {
     padding: 30px 13px 0;
     .address {

@@ -2,7 +2,7 @@
   <div class="w">
     <y-shelf title="支付成功" style="text-align: center">
       <div slot="content" class="content">
-        <p>恭喜你下单，订单金额 <span class="price"><em style="font-size: 18px">¥</em>{{price}}</span> 元</p>
+        <p>恭喜你下单成功，订单金额 <span class="price"><em style="font-size: 18px">¥</em>{{price}}</span> 元</p>
         <div style="margin-top: 20px;">
           <router-link to="/user">
             <y-button text="查看订单" style="width: 150px;height: 50px;line-height: 48px;font-size: 20px"
