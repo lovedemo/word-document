@@ -50,7 +50,7 @@
                 </div>
                 <div style="padding: 10px 0 ">头像预览</div>
                 <div class="btn">
-                  <a href="javascript:;">重新选择</a>
+                  <a href="javascript:;">选择图片</a>
                   <input type="file" value="上传头像" @change="upimg($event)"></div>
               </div>
               <div class="edit-r">

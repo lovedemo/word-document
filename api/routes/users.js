@@ -11,15 +11,7 @@ require('./../util/dateFormat')
 
 var multer  = require('multer')
 var upload = multer({ dest: 'public/uploads/bookImg' })
-// 空间名
-const bucket = 'avatar-img-d';
-/*// 七牛云
-const client = qn.create({
-    accessKey: 'n83SaVzVtzNbZvGCz0gWsWPgpERKp0oK4BtvXS-Y',
-    secretKey: '1Uve9T2_gQX9pDY0BFJCa1RM_isy9rNjfC4XVliW',
-    bucket: bucket,
-    origin: 'http://ouibvkb9c.bkt.clouddn.com'
-})*/
+
 
 // 登陆接口
 router.post('/login', async (req, res) => {
@@ -90,7 +82,7 @@ router.post('/register', async (req, res) => {
             let userId = `${r1}${(Date.parse(new Date())) / 1000}${r2}`
             // 可以注册
             User.insertMany({
-                avatar: '',//http://osc9sqdxe.bkt.clouddn.com/default-user-avatar.png
+                avatar: 'http://localhost:3333/./uploads/images/user.png',
                 cartList: [],
                 orderList: [],
                 addressList: [],
